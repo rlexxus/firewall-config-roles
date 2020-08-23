@@ -1,0 +1,53 @@
+---
+# tasks file for firewall-config
+
+- name: Ensure that firewall service is running
+  service_facts:
+
+- fail:
+        msg: "Firewall service is not running"
+  when: ansible_facts.services['firewalld.service']['state'] == "stopped"
+
+- name: Block of add port
+  block:
+          - name: Add port
+            firewalld:
+                    port: "{{ item }}"
+                    state: enabled
+                    permanent: true
+                    immediate: true
+            loop: "{{ add_port }}"
+  when: add_port is defined
+
+- name: Block of add service
+  block:
+          - name: Add service
+            firewalld:
+                    port: "{{ item }}"
+                    state: enabled
+                    permanent: true
+                    immediate: true
+            loop: "{{ add_service }}"
+  when: add_service is defined
+
+- name: Block of remove service
+  block:
+          - name: Remove service
+            firewalld:
+                    port: "{{ item }}"
+                    state: enabled
+                    permanent: true
+                    immediate: true
+            loop: "{{ remove_service }}"
+  when: remove_service is defined
+
+- name: Block of remove port
+  block:
+          - name: Remove port
+            firewalld:
+                    port: "{{ item }}"
+                    state: enabled
+                    permanent: true
+                    immediate: true
+            loop: "{{ remove_port }}"
+  when: remove_port is defined
